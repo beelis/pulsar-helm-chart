@@ -29,5 +29,11 @@ metadata:
 data:
   # common config
   {{- include "pulsar.bookkeeper.config.common" . | nindent 2 }}
+  {{- if .Values.logging.jsonLogging }}
+  PULSAR_LOG_CONF: /pulsar/conf/log4j2.yaml
+  PULSAR_LOG_APPENDER: ConsoleJson
+  {{- end }}
 {{ toYaml .Values.autorecovery.configData | indent 2 }}
+  log4j2.yaml: |
+{{ include "pulsar.logging.log4j2.yaml" . | indent 4 }}
 {{- end }}

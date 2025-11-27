@@ -309,6 +309,9 @@ spec:
             mountPath: /pulsar/gcp-service-account
           {{- end }}
           {{- end }}
+          - name: "{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}-config"
+            mountPath: /pulsar/conf/log4j2.yaml
+            subPath: log4j2.yaml
           {{- if .Values.broker.extraVolumeMounts }}
 {{ toYaml .Values.broker.extraVolumeMounts | indent 10 }}
           {{- end }}
@@ -342,6 +345,9 @@ spec:
 {{- toYaml .Values.broker.extraEnvs | nindent 10 }}
         {{- end }}
       volumes:
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}-config"
+        configMap:
+          name: "{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}"
       {{- if .Values.broker.extraVolumes }}
 {{ toYaml .Values.broker.extraVolumes | indent 6 }}
       {{- end }}

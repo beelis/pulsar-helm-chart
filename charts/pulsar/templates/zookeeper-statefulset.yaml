@@ -233,6 +233,9 @@ spec:
         volumeMounts:
         - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ .Values.zookeeper.volumes.data.name }}"
           mountPath: /pulsar/data
+        - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-config"
+          mountPath: /pulsar/conf/log4j2.yaml
+          subPath: log4j2.yaml
         {{- if .Values.zookeeper.volumes.useSeparateDiskForTxlog }}
         - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ .Values.zookeeper.volumes.datalog.name }}"
           mountPath: /pulsar/data-log
@@ -242,6 +245,9 @@ spec:
 {{ toYaml .Values.zookeeper.extraVolumeMounts | indent 8 }}
         {{- end }}
       volumes:
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-config"
+        configMap:
+          name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
       {{- if not (and (and .Values.volumes.persistence .Values.volumes.persistence) .Values.zookeeper.volumes.persistence) }}
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ .Values.zookeeper.volumes.data.name }}"
         emptyDir: {}

@@ -29,6 +29,10 @@ metadata:
 data:
   PULSAR_CLUSTER: {{ template "pulsar.fullname" . }}
   PULSAR_MANAGER_OPTS: "-Dlog4j2.formatMsgNoLookups=true"
+  {{- if .Values.logging.jsonLogging }}
+  PULSAR_LOG_CONF: /pulsar-manager/conf/log4j2.yaml
+  PULSAR_LOG_APPENDER: ConsoleJson
+  {{- end }}
   {{- if .Values.auth.authentication.enabled }}
   # auth
   {{- if .Values.auth.authentication.jwt.enabled }}
@@ -41,4 +45,6 @@ data:
   {{- end }}
   {{- end }}
 {{ toYaml .Values.pulsar_manager.configData | indent 2}}
+  log4j2.yaml: |
+{{ include "pulsar.logging.log4j2.yaml" . | indent 4 }}
 {{- end }}

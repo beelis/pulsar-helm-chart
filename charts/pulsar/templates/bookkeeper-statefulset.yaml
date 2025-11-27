@@ -251,11 +251,17 @@ spec:
           mountPath: /pulsar/data/bookkeeper/ledgers
           {{- end }}
         {{- end }}
+        - name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-config"
+          mountPath: /pulsar/conf/log4j2.yaml
+          subPath: log4j2.yaml
         {{- if .Values.bookkeeper.extraVolumeMounts }}
 {{ toYaml .Values.bookkeeper.extraVolumeMounts | indent 8 }}
         {{- end }}
         {{- include "pulsar.bookkeeper.certs.volumeMounts" . | nindent 8 }}
       volumes:
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-config"
+        configMap:
+          name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
       {{- if not (and (and .Values.persistence .Values.volumes.persistence) .Values.bookkeeper.volumes.persistence) }}
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.journal.name }}"
         emptyDir: {}

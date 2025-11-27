@@ -58,6 +58,14 @@ useReleaseStatus: true
 ## be stored under the provided path
 metadataPrefix: ""
 
+## Logging Configuration
+##
+## Configure logging format for all Pulsar components
+## When jsonLogging is enabled, all components will output logs in JSON format
+logging:
+  # Enable JSON logging for all components
+  jsonLogging: false
+
 ## Port name prefix
 ##
 ## Used for Istio support which depends on a standard naming of ports

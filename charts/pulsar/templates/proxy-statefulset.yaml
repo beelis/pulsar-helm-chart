@@ -255,8 +255,10 @@ spec:
         envFrom:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
-        {{- if or .Values.proxy.extraVolumeMounts .Values.auth.authentication.enabled (and .Values.tls.enabled (or .Values.tls.proxy.enabled .Values.tls.broker.enabled)) }}
         volumeMounts:
+          - name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}-config"
+            mountPath: /pulsar/conf/log4j2.yaml
+            subPath: log4j2.yaml
           {{- if .Values.auth.authentication.enabled }}
           {{- if .Values.auth.authentication.jwt.enabled }}
           - mountPath: "/pulsar/keys"
@@ -271,10 +273,11 @@ spec:
           {{- if .Values.proxy.extraVolumeMounts }}
 {{ toYaml .Values.proxy.extraVolumeMounts | indent 10 }}
           {{- end }}
-      {{- end}}
       {{- include "pulsar.imagePullSecrets" . | nindent 6}}
-      {{- if or .Values.proxy.extraVolumes .Values.auth.authentication.enabled (and .Values.tls.enabled .Values.tls.proxy.enabled) }}
       volumes:
+        - name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}-config"
+          configMap:
+            name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
         {{- if .Values.proxy.extraVolumes }}
 {{ toYaml .Values.proxy.extraVolumes | indent 8 }}
         {{- end }}
@@ -305,5 +308,4 @@ spec:
         {{- end}}
         {{- end}}
         {{- include "pulsar.proxy.certs.volumes" . | nindent 8 }}
-      {{- end}}
 {{- end }}

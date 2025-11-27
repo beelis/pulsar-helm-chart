@@ -112,6 +112,9 @@ spec:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.toolset.component }}"
         volumeMounts:
+        - name: "{{ template "pulsar.fullname" . }}-{{ .Values.toolset.component }}-config"
+          mountPath: /pulsar/conf/log4j2.yaml
+          subPath: log4j2.yaml
         {{- if .Values.auth.authentication.enabled }}
         {{- if .Values.auth.authentication.jwt.enabled }}
         - mountPath: "/pulsar/tokens"
@@ -124,6 +127,9 @@ spec:
         {{- end }}
         {{- include "pulsar.toolset.certs.volumeMounts" . | nindent 8 }}
       volumes:
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.toolset.component }}-config"
+        configMap:
+          name: "{{ template "pulsar.fullname" . }}-{{ .Values.toolset.component }}"
       {{- if .Values.auth.authentication.enabled }}
       {{- if .Values.auth.authentication.jwt.enabled }}
       - name: client-token

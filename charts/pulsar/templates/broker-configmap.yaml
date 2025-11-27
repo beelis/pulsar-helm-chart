@@ -271,5 +271,11 @@ data:
   # https://github.com/apache/bookkeeper/pull/2300
   bookkeeperUseV2WireProtocol: "false"
   {{- end }}
+  {{- if .Values.logging.jsonLogging }}
+  PULSAR_LOG_CONF: /pulsar/conf/log4j2.yaml
+  PULSAR_LOG_APPENDER: ConsoleJson
+  {{- end }}
 {{ toYaml .Values.broker.configData | indent 2 }}
+  log4j2.yaml: |
+{{ include "pulsar.logging.log4j2.yaml" . | indent 4 }}
 {{- end }}
